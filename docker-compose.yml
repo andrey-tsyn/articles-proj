@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+    api: 
+        build: 
+            context: articles-api/
+            args: 
+                DB_PORT: 5432
+                DB_HOST: db
+                DB_NAME: articles_api
+                DB_USER: articles_api_user
+                DB_PASS: someStrongPass
+                ADMIN_NAME: admin
+                ADMIN_PASS: admin
+        ports:
+            - 8080:8080
+        depends_on:
+            - db
+        
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+        ports:
+            - 5000:5432
+        volumes:
+            - articles-api:/data
+            - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+volumes:
+    articles-api:
